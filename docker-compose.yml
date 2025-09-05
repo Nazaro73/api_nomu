@@ -1,0 +1,62 @@
+services:
+  meilisearch:
+    image: getmeili/meilisearch:v1.7
+    container_name: meilisearch
+    environment:
+      - MEILI_MASTER_KEY=MySecretMasterKey123
+    volumes:
+      - ./data.ms:/meili_data.ms
+    ports:
+      - "7700:7700"
+
+  api:
+    build: .
+    container_name: express-api
+    ports:
+      - "3001:3001"
+    depends_on:
+      - meilisearch
+      - mysql
+    environment:
+      - PORT=3001
+      - MEILI_HOST=http://meilisearch:7700
+      - MEILI_API_KEY=MySecretMasterKey123
+      - DB_NAME=nomu_db
+      - DB_USER=nomu_user
+      - DB_PASSWORD=nomu_pass
+      - DB_HOST=mysql
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./logs:/app/logs
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-nomu
+    restart: always
+    environment:
+      MYSQL_DATABASE: nomu_db
+      MYSQL_USER: nomu_user
+      MYSQL_PASSWORD: nomu_pass
+      MYSQL_ROOT_PASSWORD: root_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    platform: linux/amd64
+    container_name: phpmyadmin-nomu
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=mysql
+      - PMA_USER=nomu_user
+      - PMA_PASSWORD=nomu_pass
+    depends_on:
+      - mysql
+
+volumes:
+  mysql-data:

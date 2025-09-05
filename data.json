@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Jean Dupont",
+    "bio": "Local passionné par l’histoire de Lyon",
+    "themes": ["histoire", "gastronomie"],
+    "languages": ["fr", "en"],
+    "location": "Lyon"
+  },
+  {
+    "id": 2,
+    "name": "Fatima Bensalah",
+    "bio": "Voyageuse intéressée par la culture méditerranéenne",
+    "themes": ["culture", "rencontre"],
+    "languages": ["fr"],
+    "location": "Marseille"
+  }
+]
