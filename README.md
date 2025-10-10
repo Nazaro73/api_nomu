@@ -51,19 +51,7 @@ Il permet de gérer les utilisateurs (locaux), de les stocker dans une base MySQ
 
 ## ⚙️ Configuration de l'environnement
 
-Créer un fichier `.env` à la racine :
-
-```env
-PORT=3001
-MEILI_HOST=http://meilisearch:7700
-MEILI_API_KEY=MySecretMasterKey123
-DB_NAME=nomu_db
-DB_USER=nomu_user
-DB_PASSWORD=nomu_pass
-DB_HOST=mysql
-```
-
----
+Créer un fichier `.env` à la racine en se basant sur `.env.example` et définir les variables d'environnement.
 
 ## ▶️ Lancement du projet
 
@@ -85,6 +73,14 @@ docker logs -f express-api
 http://localhost:8080
 Login : nomu_user
 Password : nomu_pass
+```
+
+## 🔧 Maintenance docker
+
+### Supprimer tous les volumes (base de données) et recommencer
+
+```bash
+docker compose down -v
 ```
 
 ---
