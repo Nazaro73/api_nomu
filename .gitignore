@@ -59,4 +59,7 @@ firebase-debug.log
 
 # Misc
 *.tgz
-*.orig 
+*.orig
+
+# Meilisearch data
+data.ms/ 

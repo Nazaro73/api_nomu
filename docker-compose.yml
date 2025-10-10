@@ -1,0 +1,60 @@
+services:
+  meilisearch:
+    image: getmeili/meilisearch:v1.7
+    container_name: meilisearch-nomu
+    environment:
+      - MEILI_MASTER_KEY=MySecretMasterKey123
+    volumes:
+      - ./data.ms:/meili_data
+    ports:
+      - "7700:7700"
+
+  api:
+    build: .
+    container_name: api-nomu
+    ports:
+      - "3000:3000"
+    depends_on:
+      - meilisearch
+      - postgres
+    environment:
+      - PORT=3000
+      - MEILI_HOST=http://meilisearch:7700
+      - MEILI_API_KEY=MySecretMasterKey123
+      - DB_NAME=nomu_db
+      - DB_USER=nomu_user
+      - DB_PASSWORD=nomu_pass
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DIALECT=postgres
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  postgres:
+    image: postgres:15
+    container_name: postgres-nomu
+    restart: always
+    environment:
+      POSTGRES_DB: nomu_db
+      POSTGRES_USER: nomu_user
+      POSTGRES_PASSWORD: nomu_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin-nomu
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@nomu.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-data:
