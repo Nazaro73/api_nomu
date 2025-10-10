@@ -3,13 +3,18 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.env
-.env.*.local
+pnpm-debug.log*
 
 # Logs
 logs/
 *.log
 *.log.*
+
+# Env files
+.env
+.env.*
+.env.*.local
+!.env.example
 
 # Docker
 docker-compose.override.yml
@@ -36,14 +41,33 @@ seeders/
 .vscode/
 *.swp
 *.swo
+Thumbs.db
 
 # Build output
 dist/
 build/
+lib/
+.out/
+out/
 
 # Coverage
 coverage/
+.nyc_output/
 *.lcov
+
+# Caches
+.cache/
+.eslintcache
+.stylelintcache
+.vite/
+.parcel-cache/
+.next/
+.nuxt/
+.svelte-kit/
+storybook-static/
+
+# TypeScript
+*.tsbuildinfo
 
 # Others
 *.tgz
@@ -53,9 +77,11 @@ coverage/
 *.bak
 *.tmp
 *.old
+*.orig
+
+# Debug logs
+firebase-debug.log
 
 # Optional: ignore generated Swagger files
 swagger.json
 swagger.yaml
-
-.DS_Store

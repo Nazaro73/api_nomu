@@ -1,0 +1,143 @@
+📘 README – API Express.js + Sequelize
+📌 Description
+
+Cette API permet la gestion d’utilisateurs, de profils, d’intérêts, d’activités, de réservations et de conversations avec messagerie.
+Elle est construite avec Express.js et Sequelize (ORM SQL).
+
+🚀 Technologies
+
+Node.js (Express.js)
+
+Sequelize + PostgreSQL (ou MySQL, selon besoin)
+
+JWT (authentification)
+
+bcrypt (hashage des mots de passe)
+
+Modèles et Relations avec Types
+USER
+Champ	Type Sequelize	Options
+id	INTEGER	PK, autoIncrement
+email	STRING	unique, allowNull: false
+password	STRING	allowNull: false
+role	ENUM('user','admin')	defaultValue: 'user'
+actif	BOOLEAN	defaultValue: true
+
+Relations :
+
+User ➝ 1-1 ➝ Profile
+
+User ➝ N-N ➝ Reservation (via UserReservation)
+
+User ➝ 1-N ➝ Message
+
+PROFILE
+Champ	Type Sequelize	Options
+id	INTEGER	PK, autoIncrement
+user_id	INTEGER	FK(User.id), unique, allowNull: false
+nom	STRING	allowNull: false
+prenom	STRING	allowNull: false
+age	INTEGER	allowNull: true
+biographie	TEXT	allowNull: true
+pays	STRING	allowNull: true
+ville	STRING	allowNull: true
+img_url	STRING	allowNull: true
+
+Relations :
+
+Profile ➝ belongsTo User
+
+Profile ➝ N-N ➝ Interet (via ProfileInteret)
+
+INTERET
+Champ	Type Sequelize	Options
+id	INTEGER	PK, autoIncrement
+name	STRING	unique, allowNull: false
+icon	STRING	allowNull: true
+actif	BOOLEAN	defaultValue: true
+
+Relations :
+
+Interet ➝ N-N ➝ Profile
+
+RESERVATION
+Champ	Type Sequelize	Options
+id	INTEGER	PK, autoIncrement
+status	ENUM('pending','accepted','rejected')	defaultValue: 'pending'
+conversation_id	INTEGER	FK(Conversation.id), allowNull: true
+
+Relations :
+
+Reservation ➝ N-N ➝ User (via UserReservation)
+
+Reservation ➝ 1-N ➝ Activity
+
+Reservation ➝ belongsTo Conversation
+
+ACTIVITY
+Champ	Type Sequelize	Options
+id	INTEGER	PK, autoIncrement
+title	STRING	allowNull: false
+prix	DECIMAL(10,2)	allowNull: false
+start_date	DATE	allowNull: false
+end_date	DATE	allowNull: false
+reservation_id	INTEGER	FK(Reservation.id), allowNull: false
+
+Relations :
+
+Activity ➝ belongsTo Reservation
+
+CONVERSATION
+Champ	Type Sequelize	Options
+id	INTEGER	PK, autoIncrement
+user1_id	INTEGER	FK(User.id), allowNull: false
+user2_id	INTEGER	FK(User.id), allowNull: false
+
+Relations :
+
+Conversation ➝ 1-N ➝ Message
+
+Conversation ➝ 1-1 ➝ Reservation
+
+MESSAGE
+Champ	Type Sequelize	Options
+id	INTEGER	PK, autoIncrement
+user_id	INTEGER	FK(User.id), allowNull: false
+conversation_id	INTEGER	FK(Conversation.id), allowNull: false
+content	TEXT	allowNull: false
+read	BOOLEAN	defaultValue: false
+attachement	STRING	allowNull: true
+
+Relations :
+
+Message ➝ belongsTo User
+
+Message ➝ belongsTo Conversation
+
+USER_RESERVATION (table pivot)
+Champ	Type Sequelize	Options
+user_id	INTEGER	FK(User.id)
+reservation_id	INTEGER	FK(Reservation.id)
+
+Relations :
+
+User ↔ Reservation (N-N)
+
+PROFILE_INTERET (table pivot)
+Champ	Type Sequelize	Options
+profile_id	INTEGER	FK(Profile.id)
+interet_id	INTEGER	FK(Interet.id)
+
+Relations :
+
+Profile ↔ Interet (N-N)
+
+
+🔗 Diagramme simplifié des relations
+User ─── 1:1 ─── Profile
+User ─── N:N ─── Reservation (via UserReservation)
+Profile ─── N:N ─── Interet
+Reservation ─── 1:N ─── Activity
+Reservation ─── 1:1 ─── Conversation
+Conversation ─── 1:N ─── Message
+User ─── 1:N ─── Message
