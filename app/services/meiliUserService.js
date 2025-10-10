@@ -13,5 +13,13 @@ export const indexUsers = async (data) => {
 }
 
 export const searchInUsers = async (query) => {
-  return await index.search(query)
+  try {
+    return await index.search(query)
+  } catch (error) {
+    // Si l'index n'existe pas encore, retourner un résultat vide
+    if (error.code === 'index_not_found') {
+      return { hits: [], query, limit: 20, offset: 0, estimatedTotalHits: 0 }
+    }
+    throw error
+  }
 }
