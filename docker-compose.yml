@@ -3,7 +3,7 @@ services:
     image: getmeili/meilisearch:v1.7
     container_name: meilisearch
     environment:
-      - MEILI_MASTER_KEY=MySecretMasterKey123
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
     volumes:
       - ./data.ms:/meili_data.ms
     ports:
@@ -18,13 +18,13 @@ services:
       - meilisearch
       - mysql
     environment:
-      - PORT=3001
-      - MEILI_HOST=http://meilisearch:7700
-      - MEILI_API_KEY=MySecretMasterKey123
-      - DB_NAME=nomu_db
-      - DB_USER=nomu_user
-      - DB_PASSWORD=nomu_pass
-      - DB_HOST=mysql
+      - PORT=${PORT}
+      - MEILI_HOST=${MEILI_HOST}
+      - MEILI_API_KEY=${MEILI_API_KEY}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
     volumes:
       - .:/app
       - /app/node_modules
@@ -35,10 +35,10 @@ services:
     container_name: mysql-nomu
     restart: always
     environment:
-      MYSQL_DATABASE: nomu_db
-      MYSQL_USER: nomu_user
-      MYSQL_PASSWORD: nomu_pass
-      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
@@ -52,9 +52,9 @@ services:
     ports:
       - "8080:80"
     environment:
-      - PMA_HOST=mysql
-      - PMA_USER=nomu_user
-      - PMA_PASSWORD=nomu_pass
+      - PMA_HOST=${PMA_HOST}
+      - PMA_USER=${PMA_USER}
+      - PMA_PASSWORD=${PMA_PASSWORD}
     depends_on:
       - mysql
 
