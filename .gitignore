@@ -1,0 +1,61 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.*.local
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Docker
+docker-compose.override.yml
+docker-compose.*.yml
+docker-sync.yml
+.docker/
+*.pid
+
+# MeiliSearch data
+data.ms/
+meili_data.ms/
+
+# MySQL volumes
+mysql-data/
+*.sql
+
+# Sequelize
+migrations/
+seeders/
+
+# IDEs & OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build output
+dist/
+build/
+
+# Coverage
+coverage/
+*.lcov
+
+# Others
+*.tgz
+*.gz
+*.tar
+*.zip
+*.bak
+*.tmp
+*.old
+
+# Optional: ignore generated Swagger files
+swagger.json
+swagger.yaml
+
+.DS_Store
