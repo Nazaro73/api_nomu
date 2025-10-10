@@ -1,60 +1,62 @@
 services:
   meilisearch:
     image: getmeili/meilisearch:v1.7
-    container_name: meilisearch-nomu
+    container_name: meilisearch
     environment:
-      - MEILI_MASTER_KEY=MySecretMasterKey123
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
     volumes:
-      - ./data.ms:/meili_data
+      - ./data.ms:/meili_data.ms
     ports:
       - "7700:7700"
 
   api:
     build: .
-    container_name: api-nomu
+    container_name: express-api
     ports:
-      - "3000:3000"
+      - "3001:3001"
     depends_on:
       - meilisearch
-      - postgres
+      - mysql
     environment:
-      - PORT=3000
-      - MEILI_HOST=http://meilisearch:7700
-      - MEILI_API_KEY=MySecretMasterKey123
-      - DB_NAME=nomu_db
-      - DB_USER=nomu_user
-      - DB_PASSWORD=nomu_pass
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_DIALECT=postgres
+      - PORT=${PORT}
+      - MEILI_HOST=${MEILI_HOST}
+      - MEILI_API_KEY=${MEILI_API_KEY}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
     volumes:
       - .:/app
       - /app/node_modules
+      - ./logs:/app/logs
 
-  postgres:
-    image: postgres:15
-    container_name: postgres-nomu
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-nomu
     restart: always
     environment:
-      POSTGRES_DB: nomu_db
-      POSTGRES_USER: nomu_user
-      POSTGRES_PASSWORD: nomu_pass
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - mysql-data:/var/lib/mysql
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin-nomu
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    platform: linux/amd64
+    container_name: phpmyadmin-nomu
     restart: always
     ports:
-      - "5050:80"
+      - "8080:80"
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@nomu.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PMA_HOST=${PMA_HOST}
+      - PMA_USER=${PMA_USER}
+      - PMA_PASSWORD=${PMA_PASSWORD}
     depends_on:
-      - postgres
+      - mysql
 
 volumes:
-  postgres-data:
+  mysql-data:
