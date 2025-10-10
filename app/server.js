@@ -2,7 +2,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import usersRoutes from "./routes/usersRoutes.js";
-import { sequelize } from "./models/index.js"; // OK
+import { sequelize, User } from "./models/index.js";
+import { indexUsers } from "./services/meiliUserService.js";
 
 dotenv.config();
 const app = express();
@@ -31,6 +32,27 @@ const start = async () => {
 
     await sequelize.sync({ alter: true }); // ✅ toujours bon ici
     console.log("✅ DB synced");
+
+    // Ré-indexer tous les utilisateurs dans Meilisearch au démarrage
+    try {
+      const users = await User.findAll();
+      if (users.length > 0) {
+        const usersData = users.map(user => ({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          location: user.location,
+          bio: user.bio,
+        }));
+        await indexUsers(usersData);
+        console.log(`✅ ${users.length} utilisateur(s) ré-indexé(s) dans Meilisearch`);
+      } else {
+        console.log("ℹ️  Aucun utilisateur à indexer");
+      }
+    } catch (err) {
+      console.error("⚠️  Erreur lors de la ré-indexation:", err.message);
+    }
 
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {
